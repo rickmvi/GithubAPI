@@ -1,9 +1,13 @@
 package com.github.app.api;
 
-@lombok.RequiredArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public enum URL {
     GITHUB("https://api.github.com/users/");
 
-    @lombok.Getter(value = lombok.AccessLevel.PUBLIC)
+    @Getter(value = AccessLevel.PUBLIC)
     private final String url;
 }

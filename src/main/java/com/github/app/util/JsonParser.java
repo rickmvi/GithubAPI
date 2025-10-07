@@ -18,7 +18,7 @@ public class JsonParser {
 
     @ApiStatus.Internal
     @Contract(" -> new")
-    private static @NotNull Gson build() {
+    private @NotNull Gson build() {
         return new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .serializeNulls()

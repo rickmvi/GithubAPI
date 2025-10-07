@@ -1,25 +1,29 @@
 package com.github.app.service;
 
-import com.github.app.exception.ErrorGithubConsultationException;
-import com.github.app.infra.HttpClientProvider;
 import static com.github.app.api.URL.GITHUB;
+
+import com.github.rickmvi.jtoolbox.debug.AnsiColor;
+import com.github.rickmvi.jtoolbox.debug.Logger;
+import com.github.rickmvi.jtoolbox.debug.log.LogLevel;
+import com.github.rickmvi.jtoolbox.util.HttpService;
 import org.jetbrains.annotations.NotNull;
 import com.github.app.domain.GithubUser;
-import com.github.app.util.JsonParser;
 
 public class GithubService {
-
-    private final HttpClientProvider provider = HttpClientProvider.create();
 
     public GithubUser githubUser(@NotNull String username) {
         String url = GITHUB.getUrl() + username;
 
-        if (provider.statusCode(url) != 200)
-            throw new ErrorGithubConsultationException("Error when consulting API, user does not exist!");
+        var provider = HttpService.create()
+                .GET(url)
+                .logLevel(LogLevel.INFO)
+                .send();
 
-        var json = provider.body(url);
+        provider.ifError(code -> {
+            String statusCode = AnsiColor.BOLD.getAnsiCode() + AnsiColor.RED.getAnsiCode() + code.toString() + AnsiColor.RESET.getAnsiCode();
+            Logger.error("Error when consulting API, code: " + statusCode + ". User Not Found!");
+        });
 
-        provider.close();
-        return JsonParser.fromJson(json, GithubUser.class);
+        return provider.asJson(GithubUser.class);
     }
 }

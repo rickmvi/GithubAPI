@@ -1,18 +1,17 @@
 package com.github.app;
 
 import com.github.app.service.GithubService;
+import com.github.rickmvi.jtoolbox.console.utils.Scan;
 import org.jetbrains.annotations.NotNull;
 import com.github.app.domain.GithubUser;
 
-import java.util.Scanner;
+import static com.github.rickmvi.jtoolbox.console.IO.interpolated;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         GithubService service = new GithubService();
 
-        System.out.println("Enter with github username:");
-        String username = scanner.nextLine();
+        String username = Scan.readPrompt("Enter with github username:");
 
         GithubUser user = service.githubUser(username);
 
@@ -20,20 +19,18 @@ public class Main {
     }
 
     private static void print(@NotNull GithubUser user) {
-        System.out.printf(
-                "%n===== GitHub User =====%n" +
-                        "Login     : %s%n" +
-                        "Name      : %s%n" +
-                        "Bio       : %s%n" +
-                        "Repos     : %d%n" +
-                        "Followers : %d%n" +
-                        "Following : %d%n",
-                user.getLogin(),
-                user.getName(),
-                user.getBio(),
-                user.getPublicRepos(),
-                user.getFollowers(),
-                user.getFollowing()
+        interpolated(
+                """
+                        
+                        ===== GitHub User =====
+                        Login     : {login}
+                        Name      : {name}
+                        Bio       : {bio}
+                        Repos     : {publicRepos}
+                        Followers : {followers}
+                        Following : {following}
+                        """,
+                user
         );
     }
 }
